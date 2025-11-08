@@ -1,0 +1,2 @@
+# bytekeeper
+Calculating directory hashes
