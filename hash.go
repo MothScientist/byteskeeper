@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"hash"
 	"io"
 	"log"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"sort"
 	"sync"
 	"sync/atomic"
-	"hash"
 
 	"golang.org/x/crypto/blake2b"
 )
@@ -119,9 +119,9 @@ func getFileHash(ctx context.Context, f *os.File) (string, error) {
 		}
 		hash.Write(buffer[:n]) // At each iteration, the data in buf is overwritten.
 	}
+	fileHashWithoutFilename := hex.EncodeToString(hash.Sum(nil))
+	log.Println("File: " + f.Name() + ", Hash: " + fileHashWithoutFilename)
 	hash.Write([]byte(f.Name())) // To avoid collisions, add the file name with path to the hash
-	fileHash := hex.EncodeToString(hash.Sum(nil))
-	log.Println("File: " + f.Name() + ", Hash: " + fileHash)
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
