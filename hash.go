@@ -86,11 +86,11 @@ func fileHashSum(ctx context.Context, file File) (string, error) {
 		}
 	}(openFile)
 
-	return getFileHash(ctx, openFile)
+	return getFileHash(ctx, openFile, filePath)
 }
 
 // getFileHash returns the hash of a file given its name and path.
-func getFileHash(ctx context.Context, f *os.File) (string, error) {
+func getFileHash(ctx context.Context, f *os.File, filePath string) (string, error) {
 	var hash hash.Hash
 	switch SelectedHash.name {
 	case "sha256":
@@ -120,7 +120,7 @@ func getFileHash(ctx context.Context, f *os.File) (string, error) {
 		hash.Write(buffer[:n]) // At each iteration, the data in buf is overwritten.
 	}
 	fileHashWithoutFilename := hex.EncodeToString(hash.Sum(nil))
-	log.Println("File: " + f.Name() + ", Hash: " + fileHashWithoutFilename)
+	log.Println("File: " + filePath + ", Hash: " + fileHashWithoutFilename)
 	hash.Write([]byte(f.Name())) // To avoid collisions, add the file name with path to the hash
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }

@@ -70,9 +70,6 @@ func main() {
 	fmt.Print(strData)
 	log.Print(strData)
 
-	log.Println("File system tree:")
-	root.PrintTreeLog(0)
-
 	files := root.GetAllWeightElementsWithPath()
 
 	var readyFiles atomic.Int32
@@ -96,6 +93,9 @@ func main() {
 
 	fmt.Printf("The check took %.2f sec.\n", timeProgramSec)
 	log.Printf("The check took %.2f sec.\n", timeProgramSec)
+
+	fmt.Println("To close the program, press Enter...")
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
 }
 
 // searchWorkingPath processes the string received by the user with the path to the directory

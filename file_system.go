@@ -18,21 +18,24 @@ func createDirectoriesTree(dirPath string, node *Node) (root *Node, countEdges i
 func fillRecursiveDirectoriesTree(dirPath string, node *Node, countEdges *int, countFiles *int, countBytes *int64) *Node {
 	var newDir *Node
 	if node == nil {
-		newDir = NewNode(dirPath, nil, nil)
+		newDir = NewNode(dirPath, nil)
 	} else {
 		*countEdges++
-		newDir = node.Insert(dirPath, nil)
+		newDir = node.Insert(dirPath)
 	}
 
 	entries, _ := os.ReadDir(dirPath)
 	for _, entry := range entries {
-		isDir := entry.IsDir()
+		isDir := entry.Type() & os.ModeDir != 0
+		isSymlink := entry.Type() & os.ModeSymlink != 0
 		elemName := entry.Name()
 		if isDir {
 			dirName := dirPath + "/" + elemName
 			fillRecursiveDirectoriesTree(dirName, newDir, countEdges, countFiles, countBytes)
+		} else if isSymlink {
+			continue // TODO
 		} else {
-			newDir.AddWeightElem(elemName, false)
+			newDir.AddWeightElem(elemName)
 			*countFiles++
 
 			// Next we add the file size to the final size

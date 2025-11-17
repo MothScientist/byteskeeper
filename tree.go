@@ -6,8 +6,8 @@ import (
 )
 
 type Tree interface {
-	NewNode(string, []string, *Node) *Node
-	Insert(string, []string) *Node
+	NewNode(string, *Node) *Node
+	Insert(string) *Node
 	AddWeightElem(string, bool) bool
 	GetAllWeightElementsWithPath() []string
 	PrintTree(int)
@@ -24,21 +24,18 @@ type Node struct {
 }
 
 // NewNode creates a new node
-func NewNode(name string, files []string, head *Node) *Node {
+func NewNode(name string, head *Node) *Node {
 	return &Node{
 		head:         head,
 		childs:       []*Node{},
-		weight:       len(files),
 		name:         name,
-		nodeElements: files,
 	}
 }
 
 // Insert inserts a new node into the tree
-func (n *Node) Insert(name string, files []string) *Node {
-	NewNode := NewNode(name, files, n)
+func (n *Node) Insert(name string) *Node {
+	NewNode := NewNode(name, n)
 	n.childs = append(n.childs, NewNode)
-	n.updateWeight(len(files))
 	return NewNode
 }
 
@@ -56,17 +53,9 @@ func (n *Node) updateWeight(delta int) {
 }
 
 // AddWeightElem adds a new element to the node (its weight element), taking into account the uniqueness
-func (n *Node) AddWeightElem(newElement string, uniqueOnly bool) bool {
-	if uniqueOnly {
-		for _, child := range n.childs {
-			if child.name == newElement {
-				return false
-			}
-		}
-	}
+func (n *Node) AddWeightElem(newElement string) {
 	n.nodeElements = append(n.nodeElements, newElement)
 	n.updateWeight(1)
-	return true
 }
 
 // GetAllWeightElementsWithPath get all files from a tree (breadth-first search)
