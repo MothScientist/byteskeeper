@@ -4,6 +4,7 @@ import (
 	"log"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // createDirectoriesTree fillings the tree structure with data from the system, returning the resulting values
@@ -41,7 +42,7 @@ func fillRecursiveDirectoriesTree(dirPath string, node *Node, countEdges *int, c
 			// Next we add the file size to the final size
 			info, err := entry.Info()
 			if err != nil {
-				filePath := dirPath + "/" + elemName
+				filePath := filepath.Join(dirPath, elemName)
 				log.Println("Не удалось получить информацию о файле: " + filePath)
 			} else {
 				*countBytes += info.Size()
